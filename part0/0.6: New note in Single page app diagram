@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant user
+    participant browser
+    participant server
+
+    user->>browser: creates new note then clicks "Save" button
+    
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa with payload
+    activate server
+    server: updates data.json and adds payload.
+    server-->>browser: new data.json with changes and acknowledgement {"message":"note created"}
+    deactivate server
+
+    user: sees his/her input in browser
