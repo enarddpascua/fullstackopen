@@ -1,67 +1,47 @@
 import { useState } from 'react'
 
-const Statistics = ({bad, neutral, good}) => {
-  const total = bad + neutral + good;
-  const avg = total / 3;
-  const positive = (good/total) * 100;
-  return(
-    <>
-      <h2>Statistics</h2>
-      {total > 0 ? (
-      <table>
-        <tbody>
-          <tr>
-              <StatisticsLine text={"Bad"} value={bad}/>
-          </tr>
-          <tr>
-              <StatisticsLine text={"Neutral"} value={neutral}/>
-          </tr>
-          <tr>
-              <StatisticsLine text={"Good"} value={good}/>
-          </tr>
-          <tr>
-              <StatisticsLine text={"All"} value={total}/>
-          </tr>
-          <tr>
-              <StatisticsLine text={"Average"} value={avg.toFixed(2)}/>
-          </tr>
-          <tr>
-              <StatisticsLine text={"Positive"} value={positive.toFixed(2)}/>
-          </tr>
-        </tbody>
-      </table>
-      ): <h2>No Feedback given</h2>}
-    </>
-
-  )
-}
-
-const StatisticsLine = ({text,value=0}) => {
-return(
-  <>
-    <td>{text}</td> 
-    <td>
-      {value} {text == "Positive" && "%"}
-    </td>
-  </>
-)}
-
-
 const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
+  const anecdotes = [
+    'If it hurts, do it more often.',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
+    'The only way to go fast, is to go well.'
+  ]
+   
+  const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(Array(anecdotes.length - 1).fill(0))
+
+  const getRandomInt = (max) => {
+    return Math.floor(Math.random() * max);
+  }
+  
+  const handleVotes = () => {
+    const copyPoints = [...points]
+    copyPoints[selected] += 1
+    setPoints(copyPoints)
+  }
+
+  const maxVote = Math.max(...points)
+  
+  // maxAnecdote will get the index of the highest number in points array. However, if multiple points has the same point, it will show the first match/find.
+  const maxAnecdote = anecdotes[points.indexOf(maxVote)]
 
   return (
     <div>
-      <h1>Give feedback!</h1>
+      <p>
+        {anecdotes[selected]}
+        <br/> <span>has {points[selected]} votes</span>
+      </p>
+      <button onClick={handleVotes}>vote</button>
+      <button onClick={() => setSelected(getRandomInt(anecdotes.length - 1))}>next anecdote</button>
       <div>
-        <button onClick={() => setBad(b => b+1)}>Bad</button>
-        <button onClick={() => setNeutral(n => n+1)}>Neutral</button>
-        <button onClick={() => setGood(g => g+1)}>Good</button>
+        <h2>Anecdote with most votes</h2>
+        {maxVote > 0 && <p>{maxAnecdote} <br/> has {maxVote} vote </p>}
       </div>
-      <Statistics bad={bad} neutral={neutral} good={good}/>
     </div>
   )
 }
