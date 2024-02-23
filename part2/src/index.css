@@ -12,6 +12,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
 }
 
 a {
@@ -26,9 +27,9 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  padding: 1rem;
 }
 
 h1 {
@@ -66,4 +67,20 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.person-wrapper{
+  display: flex;
+  flex-direction: row;
+  margin: 3px 0;
+}
+
+.person-wrapper > button {
+  margin-left: 3px;
+}
+
+.notification-wrapper{
+  border: 1px solid rgb(0, 238, 0);
+  background-color: grey;
+  color: rgb(0, 238, 0);
 }
