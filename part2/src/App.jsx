@@ -13,8 +13,12 @@ const App = () => {
 
 
   useEffect(() => {
-   personService.getAll().then(res => setPersons(res))
+    getAllPersons()
   }, [])
+
+  const getAllPersons = () => {
+    personService.getAll().then(res => setPersons(res))
+  }
 
   const handleName = (e) => {
     setNewName(e.target.value)
@@ -26,7 +30,7 @@ const App = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault()
-    const checkIfExist = persons.filter((person) => person.name === newName )
+    const checkIfExist = persons.filter((person) => person.name === newName)
     if (checkIfExist.length > 0){
       if(window.confirm(`${checkIfExist[0].name} is already added to phonebook, replace the old number with a new one?`)){
         checkIfExist[0].number = phone
@@ -37,7 +41,7 @@ const App = () => {
       personService.create({name:newName, number:phone}).then(res => {
         setPersons(persons.concat(res))
         setNotifMessage(`${res.name} has been added`)
-      })
+      }).catch(err => setNotifMessage(err.response.data.error))
     }
     setNewName('')
     setNewPhone('')
@@ -50,16 +54,15 @@ const App = () => {
     let id = person.id
     let personName = person.name
     if(window.confirm(`Delete ${personName}?`)){
-      personService.deletePerson(id).then(res => {
-        setPersons(persons.filter(p => p.id !== res.id))
+      personService.deletePerson(id).then(() => {
+        getAllPersons()
       }).catch(err => {
         setNotifMessage(`${personName} has already been removed from server`)
-        setTimeout(() => {
-          setNotifMessage('')
-        }, 2000);
+        setNotifMessage('')
       })
     }
   }
+
 
   return (
     <div>
@@ -74,7 +77,6 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {/* {persons.map(el => <Person key={el.id} show={filteredPersons.includes(el.id)} name={el.name} number={el.number}/>)} */}
       {persons.map(el => {
         return(
             <Person key={el.id} name={el.name} number={el.number} onDelete={() => handleDelete(el)}/>)}
